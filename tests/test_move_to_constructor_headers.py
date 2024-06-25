@@ -1,50 +1,36 @@
-from selenium import webdriver
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support import expected_conditions
-from selenium.webdriver.support.wait import WebDriverWait
+import pytest
 
+from ..locators import Locators
 
-# Переход к разделу "Соусы"
-driver = webdriver.Chrome()
+@pytest.mark.usefixtures("setup_main")
+class TestMoveToConstructorHeaders:
+    def test_move_to_constructor_headers_sauce(self):
 
-driver.get("https://stellarburgers.nomoreparties.site/")
-driver.find_element(By.XPATH, ".//span[text() = 'Соусы']").click()
+        self.driver.find_element(By.XPATH, Locators.sauce_button).click()
 
-WebDriverWait(driver, 3).until(expected_conditions.visibility_of_element_located((By.XPATH, '//h2[contains(text(),"Соусы")]')))
+        header_main = self.driver.find_element(By.XPATH, Locators.active_constructor_header)
 
-header_main = driver.find_element(By.XPATH, ".//div[@class = 'tab_tab__1SPyG tab_tab_type_current__2BEPc pt-4 pr-10 pb-4 pl-10 noselect']")
+        assert header_main.text == "Соусы"
 
-assert header_main.text == "Соусы"
+    def test_move_to_constructor_headers_topping(self):
 
-driver.quit()
+        self.driver.find_element(By.XPATH, Locators.topping_button).click()
 
-# Переход к разделу "Начинки"
-driver = webdriver.Chrome()
+        header_main = self.driver.find_element(By.XPATH, Locators.active_constructor_header)
 
-driver.get("https://stellarburgers.nomoreparties.site/")
-driver.find_element(By.XPATH, ".//span[text() = 'Начинки']").click()
+        assert header_main.text == "Начинки"
 
-WebDriverWait(driver, 3).until(expected_conditions.visibility_of_element_located((By.XPATH, '//h2[contains(text(),"Булки")]')))
+    def test_move_to_constructor_headers_bread(self):
 
-header_main = driver.find_element(By.XPATH, ".//div[@class = 'tab_tab__1SPyG tab_tab_type_current__2BEPc pt-4 pr-10 pb-4 pl-10 noselect']")
+        self.driver.find_element(By.XPATH, Locators.topping_button).click()
 
-assert header_main.text == "Начинки"
+        self.driver.find_element(By.XPATH, Locators.bread_button).click()
 
-driver.quit()
+        header_main = self.driver.find_element(By.XPATH, Locators.active_constructor_header)
 
-# Переход к разделу "Булки"
-driver = webdriver.Chrome()
+        assert header_main.text == "Булки"
 
-driver.get("https://stellarburgers.nomoreparties.site/")
-driver.find_element(By.XPATH, ".//span[text() = 'Начинки']").click()
-
-driver.find_element(By.XPATH, ".//span[text() = 'Булки']").click()
-
-header_main = driver.find_element(By.XPATH, ".//div[@class = 'tab_tab__1SPyG tab_tab_type_current__2BEPc pt-4 pr-10 pb-4 pl-10 noselect']")
-
-assert header_main.text == "Булки"
-
-driver.quit()
 
 
 

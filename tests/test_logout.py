@@ -1,29 +1,31 @@
-from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.wait import WebDriverWait
+import pytest
 
-# Выход из аккаунта
-driver = webdriver.Chrome()
+from ..locators import Locators
 
-driver.get("https://stellarburgers.nomoreparties.site/login")
 
-driver.find_element(By.XPATH, '//label[contains(text(), "Email")]/parent::div/input').send_keys("polonskaya2222@yandex.ru")
+class TestLogout:
+    @pytest.mark.usefixtures("setup_login")
+    def test_logout(self):
 
-driver.find_element(By.XPATH, './/input[@name = "Пароль"]').send_keys('222222')
+        self.driver.find_element(By.XPATH, Locators.email).send_keys("polonskaya2222@yandex.ru")
 
-driver.find_element(By.XPATH, ".//button[contains(text(),'Войти')]").click()
+        self.driver.find_element(By.XPATH, Locators.password).send_keys('222222')
 
-WebDriverWait(driver, 3).until(expected_conditions.visibility_of_element_located((By.XPATH, './/button[@class = "button_button__33qZ0 button_button_type_primary__1O7Bx button_button_size_large__G21Vg"]')))
+        self.driver.find_element(By.XPATH, Locators.login_main).click()
 
-driver.find_element(By.XPATH, ".//a[@href = '/account']").click()
+        WebDriverWait(self.driver, 3).until(expected_conditions.visibility_of_element_located((By.XPATH, Locators.create_order_button)))
 
-WebDriverWait(driver, 3).until(expected_conditions.visibility_of_element_located((By.XPATH, './/a[@href="/account/profile"]')))
+        self.driver.find_element(By.XPATH, Locators.personal_account_button).click()
 
-driver.find_element(By.XPATH, "//button[contains(text(),'Выход')]").click()
+        WebDriverWait(self.driver, 3).until(expected_conditions.visibility_of_element_located((By.XPATH, Locators.profile)))
 
-WebDriverWait(driver, 3).until(expected_conditions.visibility_of_element_located((By.XPATH, "//h2[contains(text(),'Вход')]")))
+        self.driver.find_element(By.XPATH, Locators.logout).click()
 
-assert driver.current_url == 'https://stellarburgers.nomoreparties.site/login'
+        WebDriverWait(self.driver, 3).until(expected_conditions.visibility_of_element_located((By.XPATH, Locators.enter_header)))
 
-driver.quit()
+        assert self.driver.current_url == 'https://stellarburgers.nomoreparties.site/login'
+
+

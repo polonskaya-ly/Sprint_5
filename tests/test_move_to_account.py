@@ -1,25 +1,24 @@
-from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.wait import WebDriverWait
+import pytest
 
-# Переход к "Личному кабинету"
-driver = webdriver.Chrome()
+from ..locators import Locators
 
-driver.get("https://stellarburgers.nomoreparties.site/login")
+class TestMoveToAccount:
+    @pytest.mark.usefixtures("setup_login")
+    def test_move_to_account(self):
 
-driver.find_element(By.XPATH, '//label[contains(text(), "Email")]/parent::div/input').send_keys("polonskaya2222@yandex.ru")
+        self.driver.find_element(By.XPATH, Locators.email ).send_keys("polonskaya2222@yandex.ru")
 
-driver.find_element(By.XPATH, './/input[@name = "Пароль"]').send_keys('222222')
+        self.driver.find_element(By.XPATH, Locators.password).send_keys('222222')
 
-driver.find_element(By.XPATH, ".//button[contains(text(),'Войти')]").click()
+        self.driver.find_element(By.XPATH, Locators.login_main).click()
 
-WebDriverWait(driver, 3).until(expected_conditions.visibility_of_element_located((By.XPATH, './/button[@class = "button_button__33qZ0 button_button_type_primary__1O7Bx button_button_size_large__G21Vg"]')))
+        WebDriverWait(self.driver, 3).until(expected_conditions.visibility_of_element_located((By.XPATH, Locators.create_order_button)))
 
-driver.find_element(By.XPATH, ".//a[@href = '/account']").click()
+        self.driver.find_element(By.XPATH, Locators.personal_account_button).click()
 
-WebDriverWait(driver, 3).until(expected_conditions.visibility_of_element_located((By.XPATH, './/a[@href="/account/profile"]')))
+        WebDriverWait(self.driver, 3).until(expected_conditions.visibility_of_element_located((By.XPATH, Locators.profile)))
 
-assert driver.current_url == "https://stellarburgers.nomoreparties.site/account/profile"
-
-driver.quit()
+        assert self.driver.current_url == "https://stellarburgers.nomoreparties.site/account/profile"

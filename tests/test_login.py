@@ -1,106 +1,92 @@
-from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.wait import WebDriverWait
+import pytest
 
-# Вход по кнопке «Войти в аккаунт» на главной
-driver = webdriver.Chrome()
-
-driver.get("https://stellarburgers.nomoreparties.site/")
-
-driver.find_element(By.XPATH, '//button[contains(text(),"Войти в аккаунт")]').click()
-
-assert driver.current_url == "https://stellarburgers.nomoreparties.site/login"
-
-driver.find_element(By.XPATH, '//label[contains(text(), "Email")]/parent::div/input').send_keys("polonskaya2222@yandex.ru")
-
-driver.find_element(By.XPATH, './/input[@name = "Пароль"]').send_keys('222222')
-
-driver.find_element(By.XPATH, ".//button[contains(text(),'Войти')]").click()
-
-WebDriverWait(driver, 3).until(expected_conditions.visibility_of_element_located((By.XPATH, './/button[@class = "button_button__33qZ0 button_button_type_primary__1O7Bx button_button_size_large__G21Vg"]')))
-
-assert driver.current_url == "https://stellarburgers.nomoreparties.site/"
-
-button_make_order = driver.find_element(By.XPATH, './/button[@class = "button_button__33qZ0 button_button_type_primary__1O7Bx button_button_size_large__G21Vg"]')
-
-assert  button_make_order.text == "Оформить заказ"
-
-driver.quit()
+from ..locators import Locators
 
 
-# Вход через кнопку «Войти» на странице регистрации
-driver = webdriver.Chrome()
+class TestLogin:
+    @pytest.mark.usefixtures("setup_main")
+    def test_login_account_main_page(self):
 
-driver.get("https://stellarburgers.nomoreparties.site/register")
+        self.driver.find_element(By.XPATH, Locators.personal_account_entrance).click()
 
-driver.find_element(By.XPATH, './/a[@href = "/login"]').click()
+        assert self.driver.current_url == "https://stellarburgers.nomoreparties.site/login"
 
-assert driver.current_url == "https://stellarburgers.nomoreparties.site/login"
+        self.driver.find_element(By.XPATH, Locators.email).send_keys("polonskaya2222@yandex.ru")
 
-driver.find_element(By.XPATH, '//label[contains(text(), "Email")]/parent::div/input').send_keys("polonskaya2222@yandex.ru")
+        self.driver.find_element(By.XPATH, Locators.password).send_keys('222222')
 
-driver.find_element(By.XPATH, './/input[@name = "Пароль"]').send_keys('222222')
+        self.driver.find_element(By.XPATH, Locators.login_main).click()
 
-driver.find_element(By.XPATH, ".//button[contains(text(),'Войти')]").click()
+        WebDriverWait(self.driver, 3).until(expected_conditions.visibility_of_element_located((By.XPATH, Locators.create_order_button)))
 
-WebDriverWait(driver, 3).until(expected_conditions.visibility_of_element_located((By.XPATH, './/button[@class = "button_button__33qZ0 button_button_type_primary__1O7Bx button_button_size_large__G21Vg"]')))
+        assert self.driver.current_url == "https://stellarburgers.nomoreparties.site/"
 
-assert driver.current_url == "https://stellarburgers.nomoreparties.site/"
+        button_make_order = self.driver.find_element(By.XPATH, Locators.create_order_button)
 
-button_make_order = driver.find_element(By.XPATH, './/button[@class = "button_button__33qZ0 button_button_type_primary__1O7Bx button_button_size_large__G21Vg"]')
+        assert  button_make_order.text == "Оформить заказ"
 
-assert  button_make_order.text == "Оформить заказ"
+    @pytest.mark.usefixtures("setup_register")
+    def test_login_registration_page(self):
 
-driver.quit()
+        self.driver.find_element(By.XPATH, Locators.login_button).click()
 
+        assert self.driver.current_url == "https://stellarburgers.nomoreparties.site/login"
 
-# Вход через кнопку в форме восстановления пароля
-driver = webdriver.Chrome()
+        self.driver.find_element(By.XPATH, Locators.email).send_keys("polonskaya2222@yandex.ru")
 
-driver.get("https://stellarburgers.nomoreparties.site/forgot-password")
+        self.driver.find_element(By.XPATH, Locators.password).send_keys('222222')
 
-driver.find_element(By.XPATH, './/a[@href = "/login"]').click()
+        self.driver.find_element(By.XPATH, Locators.login_main).click()
 
-assert driver.current_url == "https://stellarburgers.nomoreparties.site/login"
+        WebDriverWait(self.driver, 3).until(expected_conditions.visibility_of_element_located((By.XPATH, Locators.create_order_button)))
 
-driver.find_element(By.XPATH, '//label[contains(text(), "Email")]/parent::div/input').send_keys("polonskaya2222@yandex.ru")
+        assert self.driver.current_url == "https://stellarburgers.nomoreparties.site/"
 
-driver.find_element(By.XPATH, './/input[@name = "Пароль"]').send_keys('222222')
+        button_make_order = self.driver.find_element(By.XPATH, Locators.create_order_button)
 
-driver.find_element(By.XPATH, ".//button[contains(text(),'Войти')]").click()
+        assert  button_make_order.text == "Оформить заказ"
 
-WebDriverWait(driver, 3).until(expected_conditions.visibility_of_element_located((By.XPATH, './/button[@class = "button_button__33qZ0 button_button_type_primary__1O7Bx button_button_size_large__G21Vg"]')))
+    @pytest.mark.usefixtures("setup_password_recovery")
+    def test_login_password_recovery(self):
 
-assert driver.current_url == "https://stellarburgers.nomoreparties.site/"
+        self.driver.find_element(By.XPATH, Locators.login_button).click()
 
-button_make_order = driver.find_element(By.XPATH, './/button[@class = "button_button__33qZ0 button_button_type_primary__1O7Bx button_button_size_large__G21Vg"]')
+        assert self.driver.current_url == "https://stellarburgers.nomoreparties.site/login"
 
-assert  button_make_order.text == "Оформить заказ"
+        self.driver.find_element(By.XPATH, Locators.email).send_keys("polonskaya2222@yandex.ru")
 
-driver.quit()
+        self.driver.find_element(By.XPATH, Locators.password).send_keys('222222')
 
+        self.driver.find_element(By.XPATH, Locators.login_main).click()
 
-# Вход через кнопку "Личный кабинет"
-driver = webdriver.Chrome()
+        WebDriverWait(self.driver, 3).until(expected_conditions.visibility_of_element_located((By.XPATH, Locators.create_order_button)))
 
-driver.get("https://stellarburgers.nomoreparties.site/")
+        assert self.driver.current_url == "https://stellarburgers.nomoreparties.site/"
 
-driver.find_element(By.XPATH, './/a[@href = "/account"]').click()
+        button_make_order = self.driver.find_element(By.XPATH, Locators.create_order_button)
 
-assert driver.current_url == "https://stellarburgers.nomoreparties.site/login"
+        assert  button_make_order.text == "Оформить заказ"
 
-driver.find_element(By.XPATH, '//label[contains(text(), "Email")]/parent::div/input').send_keys("polonskaya2222@yandex.ru")
-driver.find_element(By.XPATH, './/input[@name = "Пароль"]').send_keys('222222')
+    @pytest.mark.usefixtures("setup_main")
+    def test_login_personal_account(self):
 
-driver.find_element(By.XPATH, ".//button[contains(text(),'Войти')]").click()
+        self.driver.find_element(By.XPATH, Locators.personal_account_button).click()
 
-WebDriverWait(driver, 3).until(expected_conditions.visibility_of_element_located((By.XPATH, './/button[@class = "button_button__33qZ0 button_button_type_primary__1O7Bx button_button_size_large__G21Vg"]')))
+        assert self.driver.current_url == "https://stellarburgers.nomoreparties.site/login"
 
-assert driver.current_url == "https://stellarburgers.nomoreparties.site/"
+        self.driver.find_element(By.XPATH, Locators.email).send_keys("polonskaya2222@yandex.ru")
+        self.driver.find_element(By.XPATH, Locators.password).send_keys('222222')
 
-button_make_order = driver.find_element(By.XPATH, './/button[@class = "button_button__33qZ0 button_button_type_primary__1O7Bx button_button_size_large__G21Vg"]')
+        self.driver.find_element(By.XPATH, Locators.login_main).click()
 
-assert  button_make_order.text == "Оформить заказ"
+        WebDriverWait(self.driver, 3).until(expected_conditions.visibility_of_element_located((By.XPATH, Locators.create_order_button)))
 
-driver.quit()
+        assert self.driver.current_url == "https://stellarburgers.nomoreparties.site/"
+
+        button_make_order = self.driver.find_element(By.XPATH, Locators.create_order_button)
+
+        assert  button_make_order.text == "Оформить заказ"
+

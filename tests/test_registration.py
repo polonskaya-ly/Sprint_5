@@ -1,53 +1,41 @@
-from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.wait import WebDriverWait
 import random
-
-driver = webdriver.Chrome()
-
-driver.get("https://stellarburgers.nomoreparties.site/register")
+import pytest
+from ..locators import Locators
 
 
-# Найди поле "Имя" и заполни его
-driver.find_element(By.XPATH, '//label[contains(text(), "Имя")]/parent::div/input').send_keys(f"Любовь{random.randint(1000, 9999)}")
+@pytest.mark.usefixtures("setup_register")
+class TestRegistration:
+    def test_registration(self):
 
-# Найди поле "Email" и заполни его
-driver.find_element(By.XPATH, '//label[contains(text(), "Email")]/parent::div/input').send_keys(f"polonskaya{random.randint(1000, 9999)}@yandex.ru")
-# Найди поле "Пароль" и заполни его
-driver.find_element(By.XPATH, './/input[@name = "Пароль"]').send_keys('111111')
+        self.driver.find_element(By.XPATH, Locators.name).send_keys(f"Любовь{random.randint(1000, 9999)}")
 
-# Найди кнопку "Зарегистрироваться" и кликни по ней
-driver.find_element(By.XPATH, "//button[contains(text(),'Зарегистрироваться')]").click()
-WebDriverWait(driver, 3).until(expected_conditions.visibility_of_element_located((By.XPATH, ".//h2[text() = 'Вход']")))
+        self.driver.find_element(By.XPATH, Locators.email).send_keys(f"polonskaya{random.randint(1000, 9999)}@yandex.ru")
 
-assert driver.current_url == 'https://stellarburgers.nomoreparties.site/login'
+        self.driver.find_element(By.XPATH, Locators.password).send_keys('111111')
 
-driver.quit()
+        self.driver.find_element(By.XPATH, Locators.button_register).click()
+        WebDriverWait(self.driver, 3).until(expected_conditions.visibility_of_element_located((By.XPATH, Locators.enter_header)))
 
-# Получение ошибки для невалидного пароля
-driver = webdriver.Chrome()
+        assert self.driver.current_url == 'https://stellarburgers.nomoreparties.site/login'
 
-driver.get("https://stellarburgers.nomoreparties.site/register")
+    def test_registration_error_password(self):
 
+        self.driver.find_element(By.XPATH, Locators.name).send_keys(f"Любовь{random.randint(1000, 9999)}")
 
-# Найди поле "Имя" и заполни его
-driver.find_element(By.XPATH, '//label[contains(text(), "Имя")]/parent::div/input').send_keys(f"Любовь{random.randint(1000, 9999)}")
+        self.driver.find_element(By.XPATH, Locators.email).send_keys(f"polonskaya{random.randint(1000, 9999)}@yandex.ru")
 
-# Найди поле "Email" и заполни его
-driver.find_element(By.XPATH, '//label[contains(text(), "Email")]/parent::div/input').send_keys(f"polonskaya{random.randint(1000, 9999)}@yandex.ru")
-# Найди поле "Пароль" и заполни его
-driver.find_element(By.XPATH, './/input[@name = "Пароль"]').send_keys('11111')
+        self.driver.find_element(By.XPATH, Locators.password).send_keys('11111')
 
-driver.find_element(By.XPATH, "//button[contains(text(),'Зарегистрироваться')]").click()
+        self.driver.find_element(By.XPATH, Locators.button_register).click()
 
+        WebDriverWait(self.driver, 3).until(expected_conditions.visibility_of_element_located((By.XPATH, Locators.password_error)))
 
-WebDriverWait(driver, 3).until(expected_conditions.visibility_of_element_located((By.XPATH, "//p[@class = 'input__error text_type_main-default']")))
+        error_message = self.driver.find_element(By.XPATH, Locators.password_error)
 
-error_message = driver.find_element(By.XPATH, "//p[@class = 'input__error text_type_main-default']")
+        assert error_message.text == 'Некорректный пароль'
 
-assert error_message.text == 'Некорректный пароль'
+        assert self.driver.current_url == 'https://stellarburgers.nomoreparties.site/register'
 
-assert driver.current_url == 'https://stellarburgers.nomoreparties.site/register'
-
-driver.quit()
