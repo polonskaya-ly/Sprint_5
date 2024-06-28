@@ -22,8 +22,6 @@ class TestRegistration:
         self.driver.find_element(By.XPATH, Locators.email).send_keys(register_data[1])
         self.driver.find_element(By.XPATH, Locators.password).send_keys(TestData.invalid_password)
         self.driver.find_element(By.XPATH, Locators.button_register).click()
-        WebDriverWait(self.driver, 3).until(expected_conditions.visibility_of_element_located((By.XPATH, Locators.password_error)))
-        error_message = self.driver.find_element(By.XPATH, Locators.password_error)
-        assert error_message.text == 'Некорректный пароль'
+        assert self.driver.find_element(By.XPATH, Locators.password_error).is_displayed()
         assert self.driver.current_url == PagesUrl.register
 

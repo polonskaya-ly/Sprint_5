@@ -4,7 +4,7 @@ class Locators:
     password = './/input[@name = "Пароль"]'
     button_register = "//button[contains(text(),'Зарегистрироваться')]"
     enter_header = ".//h2[text() = 'Вход']"
-    password_error = "//p[@class = 'input__error text_type_main-default']"
+    password_error = "//p[contains(text(),'Некорректный пароль')]"
     personal_account_entrance = ".//button[contains(text(),'Войти в аккаунт')]"
     create_order_button = ".//button[contains(text(),'Оформить заказ')]"
     login_button = './/a[@href = "/login"]'
