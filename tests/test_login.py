@@ -46,4 +46,3 @@ class TestLogin:
         WebDriverWait(self.driver, 3).until(
             expected_conditions.presence_of_element_located((By.XPATH, Locators.create_order_button)))
         assert  self.driver.find_element(By.XPATH, Locators.create_order_button).is_displayed()
-

@@ -5,6 +5,7 @@ import pytest
 from ..locators import Locators
 from ..pages_url import PagesUrl
 
+
 @pytest.mark.usefixtures("driver", "login")
 class TestMoveToAccount:
     def test_move_to_account(self):

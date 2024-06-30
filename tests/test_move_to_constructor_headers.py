@@ -2,6 +2,7 @@ from selenium.webdriver.common.by import By
 import pytest
 from ..locators import Locators
 
+
 @pytest.mark.usefixtures("driver")
 class TestMoveToConstructorHeaders:
     def test_move_to_constructor_headers_sauce(self):
@@ -19,10 +20,3 @@ class TestMoveToConstructorHeaders:
         self.driver.find_element(By.XPATH, Locators.bread_button).click()
         ingredient_button = self.driver.find_element(By.XPATH, Locators.bread_button).get_attribute('class')
         assert ingredient_button == Locators.active_constructor_header
-
-
-
-
-
-
-

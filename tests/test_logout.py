@@ -5,6 +5,7 @@ import pytest
 from ..locators import Locators
 from ..pages_url import PagesUrl
 
+
 @pytest.mark.usefixtures("driver", "login")
 class TestLogout:
     def test_logout(self):
@@ -13,5 +14,3 @@ class TestLogout:
         self.driver.find_element(By.XPATH, Locators.logout).click()
         WebDriverWait(self.driver, 3).until(expected_conditions.visibility_of_element_located((By.XPATH, Locators.enter_header)))
         assert self.driver.current_url == PagesUrl.domain + PagesUrl.login_path
-
-

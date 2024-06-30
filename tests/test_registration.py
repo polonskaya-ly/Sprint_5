@@ -26,4 +26,3 @@ class TestRegistration:
         self.driver.find_element(By.XPATH, Locators.button_register).click()
         assert self.driver.find_element(By.XPATH, Locators.password_error).is_displayed()
         assert self.driver.current_url == PagesUrl.domain + PagesUrl.register_path
-

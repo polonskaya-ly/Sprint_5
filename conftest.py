@@ -33,6 +33,3 @@ def register_data():
     name = f"Любовь{random.randint(1000, 9999)}"
     email = f"polonskaya{random.randint(1000, 9999)}@yandex.ru"
     return name, email
-
-
-
