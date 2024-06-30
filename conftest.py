@@ -10,43 +10,23 @@ import random
 
 
 @pytest.fixture()
-def setup_register(request):
+def driver(request):
     driver = webdriver.Chrome()
-    driver.get(PagesUrl.register)
+    driver.get(PagesUrl.domain)
     request.cls.driver = driver
     yield driver
     driver.close()
 
 
 @pytest.fixture()
-def setup_main(request):
-    driver = webdriver.Chrome()
-    driver.get(PagesUrl.main)
-    request.cls.driver = driver
-    yield driver
-    driver.close()
-
-
-@pytest.fixture()
-def setup_password_recovery(request):
-    driver = webdriver.Chrome()
-    driver.get(PagesUrl.password_recovery)
-    request.cls.driver = driver
-    yield driver
-    driver.close()
-
-
-@pytest.fixture()
-def login(request):
-    driver = webdriver.Chrome()
-    driver.get(PagesUrl.login)
-    request.cls.driver = driver
+def login(driver):
+    driver.get(PagesUrl.domain + PagesUrl.login_path)
     driver.find_element(By.XPATH, Locators.email).send_keys(TestData.email)
     driver.find_element(By.XPATH, Locators.password).send_keys(TestData.password)
     driver.find_element(By.XPATH, Locators.login_main).click()
     WebDriverWait(driver, 3).until(expected_conditions.presence_of_element_located((By.XPATH, Locators.create_order_button)))
-    yield driver
-    driver.close()
+    return driver
+
 
 @pytest.fixture
 def register_data():

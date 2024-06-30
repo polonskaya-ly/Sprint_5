@@ -2,7 +2,7 @@ from selenium.webdriver.common.by import By
 import pytest
 from ..locators import Locators
 
-@pytest.mark.usefixtures("setup_main")
+@pytest.mark.usefixtures("driver")
 class TestMoveToConstructorHeaders:
     def test_move_to_constructor_headers_sauce(self):
         self.driver.find_element(By.XPATH, Locators.sauce_button).click()
